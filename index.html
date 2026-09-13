@@ -13,7 +13,7 @@
             padding-top: 50px;
         }
         .mic-btn {
-            background-color: #00d2ff;
+            background-color: #0d2ff;
             color: #000;
             border: none;
             padding: 20px 40px;
@@ -35,7 +35,7 @@
 
     <h1>JARVIS AI</h1>
     <div class="status" id="statusText">Tap karke baat karein...</div>
-    <button class="mic-btn" onclick="startJarvis()">🎤 Tap to Speak</button>
+    <button class="mic-btn" onclick="startJarvis()">🎙️ Tap to Speak</button>
 
     <script>
         // Jarvis ki aawaz (Text to Speech)
@@ -46,10 +46,10 @@
             window.speechSynthesis.speak(speech);
         }
 
-        // App khulte hi welcome
+        // App khulte hi Jarvis ka pehla welcome
         window.onload = function() {
             speak("Aamir bhai, Jarvis apke khidmat mein hazir hai. Boliye, aaj kya hukum hai?");
-        };
+        }
 
         // Mic aur Sunne ka smart system
         function startJarvis() {
@@ -61,44 +61,43 @@
 
             const recognition = new SpeechRecognition();
             recognition.lang = 'hi-IN';
-            
+
             document.getElementById("statusText").innerText = "Suna ja raha hai... boliye!";
 
             recognition.onresult = function(event) {
                 const userSpeech = event.results[0][0].transcript.toLowerCase();
                 document.getElementById("statusText").innerText = "Aapne kaha: " + userSpeech;
-                
+
                 // 1. Din aur Vaar (Day) batane ka logic
-                if(userSpeech.includes("din") || userSpeech.includes("vaar") || userSpeech.includes("aaj kaun sa")) {
-                    const days = ["Ravivar (Sunday)", "Somwar (Monday)", "Mangalwar (Tuesday)", "Budhwar (Wednesday)", "Grivar (Thursday)", "Shukrawar (Friday)", "Shanivar (Saturday)"];
-                    const hindiDays = ["Ravivar", "Somwar", "Mangalwar", "Budhwar", "Jumerat (Thursday)", "Jumma (Friday)", "Sanichar (Saturday)"];
+                if (userSpeech.includes("din") || userSpeech.includes("vaar") || userSpeech.includes("aaj") || userSpeech.includes("day")) {
+                    const days = ["Raviwar (Sunday)", "Somwar (Monday)", "Mangalwar (Tuesday)", "Budhwar (Wednesday)", "Jumerat (Thursday)", "Juma (Friday)", "Sanichar (Saturday)"];
+                    const hindiDays = ["Ravivar", "Somwar", "Mangalwar", "Budhwar", "Jumerat", "Juma", "Sanichar"];
                     const today = new Date().getDay();
                     speak("Aamir bhai, aaj " + hindiDays[today] + " hai.");
-                } 
+                }
                 // 2. Waqt (Time) batane ka logic
-                else if(userSpeech.includes("time") || userSpeech.includes("samay")  || userSpeech.includes("kitna baje") || userSpeech.includes("kitna time")) {
+                else if (userSpeech.includes("time") || userSpeech.includes("samay") || userSpeech.includes("kitna baje") || userSpeech.includes("baje")) {
                     const now = new Date();
                     let hours = now.getHours();
-                    const minutes = now.getMinutes();
-                    let timePeriod = hours >= 12 ? "raat ya dopahar ke baad" : "subah ke";
+                    let minutes = now.getMinutes();
                     
-                    // 12 hours format mein badalna
+                    let timePeriod = hours >= 12 ? "raat ya dopahar ke baad" : "subah ko";
                     hours = hours % 12;
-                    hours = hours ? hours : 12; 
-                    
+                    hours = hours ? hours : 12; // 0 ko 12 mein badalna
+
                     speak("Aamir bhai, abhi " + hours + " baj kar " + minutes + " minute ho rahe hain.");
                 }
                 // 3. Haal-chal / Hello
-                else if(userSpeech.includes("hello") || userSpeech.includes("salam") || userSpeech.includes("kaise ho")) {
+                else if (userSpeech.includes("hello") || userSpeech.includes("salam") || userSpeech.includes("kaise ho")) {
                     speak("Salam Aamir bhai! Main ekdum fit hoon, aap bataiye aap kaise hain?");
-                } 
+                }
                 // 4. Shukriya
-                else if(userSpeech.includes("thank you") || userSpeech.includes("shukriya")) {
+                else if (userSpeech.includes("thank") || userSpeech.includes("shukriya")) {
                     speak("Aapka shukriya ada karne ki zaroorat nahi hai Aamir bhai.");
-                } 
+                }
                 // 5. Kuch aur kehne par default jawab
                 else {
-                    speak("Aapne kaha: " + userSpeech + ". Yeh baat maine samajh li hai Aamir bhai.");
+                    speak("Aapne kaha: " + userSpeech + ". Yeh baat maine samajh li hai Amir bhai.");
                 }
             };
 
@@ -112,4 +111,3 @@
 
 </body>
 </html>
-
