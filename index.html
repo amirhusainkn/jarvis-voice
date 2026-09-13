@@ -1,1 +1,88 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jarvis Voice Assistant</title>
+    <style>
+        body {
+            background-color: #0b0f19;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding-top: 50px;
+        }
+        .mic-btn {
+            background-color: #00d2ff;
+            color: #000;
+            border: none;
+            padding: 20px 40px;
+            font-size: 20px;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(0, 210, 255, 0.5);
+            margin-top: 30px;
+        }
+        .status {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #00ffcc;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>JARVIS AI</h1>
+    <div class="status" id="statusText">Tap karke baat karein...</div>
+    <button class="mic-btn" onclick="startJarvis()">🎤 Tap to Speak</button>
+
+    <script>
+        // Jarvis ki aawaz (Text to Speech)
+        function speak(text) {
+            const speech = new SpeechSynthesisUtterance(text);
+            speech.lang = 'hi-IN';
+            speech.rate = 1.0;
+            window.speechSynthesis.speak(speech);
+        }
+
+        // App khulte hi Jarvis ka pehla welcome
+        window.onload = function() {
+            speak("Aamir bhai, Jarvis taiyar hai. Boliye, kya hukum hai?");
+        };
+
+        // Mic aur Sunne ka system (Speech to Text)
+        function startJarvis() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                alert("Aapka browser ya device ise support nahi karta!");
+                return;
+            }
+
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'hi-IN';
+            
+            document.getElementById("statusText").innerText = "Suna ja raha hai... boliye!";
+
+            recognition.onresult = function(event) {
+                const userSpeech = event.results[0][0].transcript;
+                document.getElementById("statusText").innerText = "Aapne kaha: " + userSpeech;
+                
+                if(userSpeech.includes("hello") || userSpeech.includes("salam")) {
+                    speak("Salam Aamir bhai, bataiye main aapki kya madad karoon?");
+                } else {
+                    speak("Aapne kaha: " + userSpeech);
+                }
+            };
+
+            recognition.onerror = function(event) {
+                document.getElementById("statusText").innerText = "Awaaz sunne mein dikkat aayi, dobara koshish karein.";
+            };
+
+            recognition.start();
+        }
+    </script>
+
+</body>
+</html>
 
