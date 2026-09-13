@@ -7,12 +7,6 @@
   "theme_color": "#00d2ff",
   "id": "jarvis-app",
   "description": "A bilingual voice assistant built by Aamir Hussain",
-  "scope": "./",
-  "icons": [
-    {
-      "src": "https://raw.githubusercontent.com/amirhusainkn/jarvis-voice/main/icon.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
-  ]
+  "scope": "./"
 }
+
