@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jarvis Voice Assistant</title>
+    <!-- PWA Manifest Link -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#00d2ff">
     <style>
         body {
             background-color: #0b0f19;
@@ -67,8 +70,8 @@
                 
                 document.getElementById("statusText").innerText = "Aapne kaha: " + rawSpeech;
 
-                // 1. Time check -> Sirf English mein (It's 12:15)
-                if (userSpeech.includes("time") || userSpeech.includes("samay") || userSpeech.includes("baje") || userSpeech.includes("kitna") || userSpeech.includes("wat") || userSpeech.includes("what")) {
+                // 1. Time check
+                if (userSpeech.includes("time") || userSpeech.includes("samay") || userSpeech.includes("baje") || userSpeech.includes("kitna")) {
                     const now = new Date();
                     let hours = now.getHours();
                     let minutes = now.getMinutes();
@@ -80,7 +83,14 @@
                     let timeMsg = "It's " + displayHours + ":" + minText;
                     speak(timeMsg);
                 }
-                // 2. Din check -> Hindi/Urdu sath mein English meaning
+                // 2. Date check -> Tareekh batane ke liye naya feature
+                else if (userSpeech.includes("date") || userSpeech.includes("tareekh") || userSpeech.includes("tarikh")) {
+                    const now = new Date();
+                    const options = { day: 'numeric', month: 'long', year: 'numeric' };
+                    let dateStr = now.toLocaleDateString('en-IN', options);
+                    speak("Aaj ki tareekh " + dateStr + " hai.");
+                }
+                // 3. Din check -> Hindi/Urdu sath mein English meaning
                 else if (userSpeech.includes("day") || userSpeech.includes("din") || userSpeech.includes("today") || userSpeech.includes("vaar")) {
                     const hindiDays = ["Ravivar", "Somwar", "Mangalwar", "Budhwar", "Jumerat", "Juma", "Sanichar"];
                     const englishDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -89,7 +99,7 @@
                     let dayMsg = "Aaj " + hindiDays[today] + " hai, yaani " + englishDays[today];
                     speak(dayMsg);
                 }
-                // 3. Battery check -> Naya smart feature
+                // 4. Battery check
                 else if (userSpeech.includes("battery") || userSpeech.includes("charge")) {
                     if (navigator.getBattery) {
                         navigator.getBattery().then(function(battery) {
@@ -100,7 +110,7 @@
                         speak("Aamir bhai, battery status available nahi hai.");
                     }
                 }
-                // 4. Hello / Salam check
+                // 5. Hello / Salam check
                 else if (userSpeech.includes("hello") || userSpeech.includes("salam") || userSpeech.includes("hi")) {
                     speak("Salam Aamir bhai! Main ekdum fit hoon.");
                 }
@@ -115,6 +125,14 @@
 
             recognition.start();
         }
+
+        // Service Worker Registration Script
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(() => console.log('Service Worker Registered Successfully'));
+        }
     </script>
+
+
 
 
