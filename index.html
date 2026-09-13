@@ -41,7 +41,7 @@
     <script>
         function speak(text) {
             const speech = new SpeechSynthesisUtterance(text);
-            speech.lang = 'hi-IN';
+            speech.lang = 'en-IN';
             speech.rate = 1.0;
             window.speechSynthesis.speak(speech);
         }
@@ -58,7 +58,6 @@
             }
 
             const recognition = new SpeechRecognition();
-            // English-India set karne se Roman words bilkul theek catch honge
             recognition.lang = 'en-IN'; 
             document.getElementById("statusText").innerText = "Suna ja raha hai... boliye!";
 
@@ -66,29 +65,45 @@
                 const rawSpeech = event.results[0][0].transcript;
                 const userSpeech = rawSpeech.toLowerCase();
                 
-                // Yeh screen par dikhayega ki browser ne kya sun kar pakda hai
                 document.getElementById("statusText").innerText = "Aapne kaha: " + rawSpeech;
 
-                // Time / Samay check
+                // 1. Time check -> Sirf English mein (It's 12:15)
                 if (userSpeech.includes("time") || userSpeech.includes("samay") || userSpeech.includes("baje") || userSpeech.includes("kitna") || userSpeech.includes("wat") || userSpeech.includes("what")) {
                     const now = new Date();
                     let hours = now.getHours();
                     let minutes = now.getMinutes();
-                    hours = hours % 12;
-                    hours = hours ? hours : 12;
-                    speak("Aamir bhai, abhi " + hours + " baj kar " + minutes + " minute ho rahe hain.");
+                    
+                    let displayHours = hours % 12;
+                    displayHours = displayHours ? displayHours : 12;
+                    let minText = minutes < 10 ? "0" + minutes : minutes;
+
+                    let timeMsg = "It's " + displayHours + ":" + minText;
+                    speak(timeMsg);
                 }
-                // Din / Vaar check
+                // 2. Din check -> Hindi/Urdu sath mein English meaning
                 else if (userSpeech.includes("day") || userSpeech.includes("din") || userSpeech.includes("today") || userSpeech.includes("vaar")) {
                     const hindiDays = ["Ravivar", "Somwar", "Mangalwar", "Budhwar", "Jumerat", "Juma", "Sanichar"];
+                    const englishDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
                     const today = new Date().getDay();
-                    speak("Aamir bhai, aaj " + hindiDays[today] + " hai.");
+                    
+                    let dayMsg = "Aaj " + hindiDays[today] + " hai, yaani " + englishDays[today];
+                    speak(dayMsg);
                 }
-                // Hello / Salam check
+                // 3. Battery check -> Naya smart feature
+                else if (userSpeech.includes("battery") || userSpeech.includes("charge")) {
+                    if (navigator.getBattery) {
+                        navigator.getBattery().then(function(battery) {
+                            let level = Math.floor(battery.level * 100);
+                            speak("Aamir bhai, mobile ki battery " + level + " percent hai.");
+                        });
+                    } else {
+                        speak("Aamir bhai, battery status available nahi hai.");
+                    }
+                }
+                // 4. Hello / Salam check
                 else if (userSpeech.includes("hello") || userSpeech.includes("salam") || userSpeech.includes("hi")) {
                     speak("Salam Aamir bhai! Main ekdum fit hoon.");
                 }
-                // Agar kuch aur ho toh screen par status update ho jayega
                 else {
                     speak("Aamir bhai, aapne bola: " + rawSpeech);
                 }
