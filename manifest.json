@@ -10,13 +10,7 @@
   "scope": "./",
   "icons": [
     {
-      "src": "https://raw.githubusercontent.com/amirhusainkn/jarvis-voice/main/index.html",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "https://raw.githubusercontent.com/amirhusainkn/jarvis-voice/main/index.html",
+      "src": "1789369730196.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
