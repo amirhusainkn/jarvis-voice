@@ -1,21 +1,25 @@
 {
   "name": "Jarvis Voice Assistant",
   "short_name": "Jarvis",
-  "start_url": ".",
+  "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#000000",
-  "description": "A bilingual voice assistant by Aamir Hussain",
+  "background_color": "#0b0f19",
+  "theme_color": "#00d2ff",
+  "description": "A bilingual voice assistant built by Aamir Hussain",
+  "orientation": "portrait",
+  "scope": "./",
   "icons": [
     {
-      "src": "https://via.placeholder.com/192.png?text=Jarvis",
+      "src": "https://raw.githubusercontent.com/amirhusainkn/jarvis-voice/main/index.html",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "src": "https://via.placeholder.com/512.png?text=Jarvis",
+      "src": "https://raw.githubusercontent.com/amirhusainkn/jarvis-voice/main/index.html",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
