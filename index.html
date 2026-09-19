@@ -1,135 +1,35 @@
-<!DOCTYPE html>
-<html lang="hi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jarvis Voice Assistant</title>
-    <!-- PWA Manifest Link -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#00d2ff">
-    <style>
-        body {
-            background-color: #0b0f19;
-            color: #ffffff;
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding-top: 50px;
-        }
-        .mic-btn {
-            background-color: #00d2ff;
-            color: #000;
-            border: none;
-            padding: 20px 40px;
-            font-size: 20px;
-            font-weight: bold;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 0 20px rgba(0, 210, 255, 0.5);
-            margin-top: 30px;
-        }
-        .status {
-            margin-top: 20px;
-            font-size: 18px;
-            color: #00ffcc;
-            padding: 0 20px;
-        }
-    </style>
-</head>
-<body>
+// 1. Jarvis के बोलने का कोड (Text-to-Speech)
+function speakJarvis(text) {
+    if ('speechSynthesis' in window) {
+        let utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'hi-IN'; // हिंदी / उर्दू लहजे के लिए
+        utterance.rate = 1.0; 
+        window.speechSynthesis.speak(utterance);
+    }
+}
 
-    <h1>JARVIS AI</h1>
-    <div class="status" id="statusText">Tap karke baat karein...</div>
-    <button class="mic-btn" onclick="startJarvis()">🎙️ Tap to Speak</button>
+// 2. Jarvis के सुनने का कोड (Speech Recognition - आवाज़ पहचनना)
+function startListening() {
+    window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (window.SpeechRecognition) {
+        let recognition = new SpeechRecognition();
+        recognition.lang = 'hi-IN';
+        recognition.interimResults = false;
 
-    <script>
-        function speak(text) {
-            const speech = new SpeechSynthesisUtterance(text);
-            speech.lang = 'en-IN';
-            speech.rate = 1.0;
-            window.speechSynthesis.speak(speech);
-        }
+        recognition.onstart = function() {
+            console.log("Jarvis सुन रहा है...");
+        };
 
-        window.onload = function() {
-            speak("Aamir bhai, Jarvis hajir hai.");
-        }
+        recognition.onresult = function(event) {
+            let spokenText = event.results[0][0].transcript;
+            console.log("आपने कहा: " + spokenText);
+            
+            // यहाँ Jarvis जवाब देगा
+            speakJarvis("आपने कहा: " + spokenText);
+        };
 
-        function startJarvis() {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechRecognition) {
-                alert("Browser support nahi karta!");
-                return;
-            }
-
-            const recognition = new SpeechRecognition();
-            recognition.lang = 'en-IN'; 
-            document.getElementById("statusText").innerText = "Suna ja raha hai... boliye!";
-
-            recognition.onresult = function(event) {
-                const rawSpeech = event.results[0][0].transcript;
-                const userSpeech = rawSpeech.toLowerCase();
-                
-                document.getElementById("statusText").innerText = "Aapne kaha: " + rawSpeech;
-
-                // 1. Time check
-                if (userSpeech.includes("time") || userSpeech.includes("samay") || userSpeech.includes("baje") || userSpeech.includes("kitna")) {
-                    const now = new Date();
-                    let hours = now.getHours();
-                    let minutes = now.getMinutes();
-                    
-                    let displayHours = hours % 12;
-                    displayHours = displayHours ? displayHours : 12;
-                    let minText = minutes < 10 ? "0" + minutes : minutes;
-
-                    let timeMsg = "It's " + displayHours + ":" + minText;
-                    speak(timeMsg);
-                }
-                // 2. Date check -> Tareekh batane ke liye naya feature
-                else if (userSpeech.includes("date") || userSpeech.includes("tareekh") || userSpeech.includes("tarikh")) {
-                    const now = new Date();
-                    const options = { day: 'numeric', month: 'long', year: 'numeric' };
-                    let dateStr = now.toLocaleDateString('en-IN', options);
-                    speak("Aaj ki tareekh " + dateStr + " hai.");
-                }
-                // 3. Din check -> Hindi/Urdu sath mein English meaning
-                else if (userSpeech.includes("day") || userSpeech.includes("din") || userSpeech.includes("today") || userSpeech.includes("vaar")) {
-                    const hindiDays = ["Ravivar", "Somwar", "Mangalwar", "Budhwar", "Jumerat", "Juma", "Sanichar"];
-                    const englishDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-                    const today = new Date().getDay();
-                    
-                    let dayMsg = "Aaj " + hindiDays[today] + " hai, yaani " + englishDays[today];
-                    speak(dayMsg);
-                }
-                // 4. Battery check
-                else if (userSpeech.includes("battery") || userSpeech.includes("charge")) {
-                    if (navigator.getBattery) {
-                        navigator.getBattery().then(function(battery) {
-                            let level = Math.floor(battery.level * 100);
-                            speak("Aamir bhai, mobile ki battery " + level + " percent hai.");
-                        });
-                    } else {
-                        speak("Aamir bhai, battery status available nahi hai.");
-                    }
-                }
-                // 5. Hello / Salam check
-                else if (userSpeech.includes("hello") || userSpeech.includes("salam") || userSpeech.includes("hi")) {
-                    speak("Salam Aamir bhai! Main ekdum fit hoon.");
-                }
-                else {
-                    speak("Aamir bhai, aapne bola: " + rawSpeech);
-                }
-            };
-
-            recognition.onerror = function() {
-                document.getElementById("statusText").innerText = "Aawaz sunne mein dikkat aayi, dobara koshish karein.";
-            };
-
-            recognition.start();
-        }
-
-        // Service Worker Registration Script
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js')
-                .then(() => console.log('Service Worker Registered Successfully'));
-        }
-    </script>
-
+        recognition.start();
+    } else {
+        speakJarvis("क्षमा करें, आपका डिवाइस आवाज़ सुनने की अनुमति नहीं दे रहा है।");
+    }
+}
