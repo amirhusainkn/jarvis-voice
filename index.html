@@ -1,35 +1,49 @@
-// 1. Jarvis के बोलने का कोड (Text-to-Speech)
-function speakJarvis(text) {
-    if ('speechSynthesis' in window) {
-        let utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'hi-IN'; // हिंदी / उर्दू लहजे के लिए
-        utterance.rate = 1.0; 
-        window.speechSynthesis.speak(utterance);
-    }
-}
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jarvis Assistant</title>
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <h1>Jarvis Assistant Active</h1>
+    <button onclick="startListening()">Jarvis से बात करें</button>
 
-// 2. Jarvis के सुनने का कोड (Speech Recognition - आवाज़ पहचनना)
-function startListening() {
-    window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (window.SpeechRecognition) {
-        let recognition = new SpeechRecognition();
-        recognition.lang = 'hi-IN';
-        recognition.interimResults = false;
+    <script>
+        // 1. Jarvis के बोलने का कोड (Text-to-Speech)
+        function speakJarvis(text) {
+            if ('speechSynthesis' in window) {
+                let utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'hi-IN';
+                utterance.rate = 1.0; 
+                window.speechSynthesis.speak(utterance);
+            }
+        }
 
-        recognition.onstart = function() {
-            console.log("Jarvis सुन रहा है...");
-        };
+        // 2. Jarvis के सुनने का कोड (Speech Recognition)
+        function startListening() {
+            window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (window.SpeechRecognition) {
+                let recognition = new SpeechRecognition();
+                recognition.lang = 'hi-IN';
+                recognition.interimResults = false;
 
-        recognition.onresult = function(event) {
-            let spokenText = event.results[0][0].transcript;
-            console.log("आपने कहा: " + spokenText);
-            
-            // यहाँ Jarvis जवाब देगा
-            speakJarvis("आपने कहा: " + spokenText);
-        };
+                recognition.onstart = function() {
+                    console.log("Jarvis सुन रहा है...");
+                };
 
-        recognition.start();
-    } else {
-        speakJarvis("क्षमा करें, आपका डिवाइस आवाज़ सुनने की अनुमति नहीं दे रहा है।");
-    }
-}
+                recognition.onresult = function(event) {
+                    let spokenText = event.results[0][0].transcript;
+                    console.log("आपने कहा: " + spokenText);
+                    speakJarvis("आपने कहा: " + spokenText);
+                };
+
+                recognition.start();
+            } else {
+                speakJarvis("क्षमा करें, आपका डिवाइस आवाज़ सुनने की अनुमति नहीं दे रहा है।");
+            }
+        }
+    </script>
+</body>
+</html>
